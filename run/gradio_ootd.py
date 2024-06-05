@@ -21,10 +21,12 @@ openpose_model_hd = OpenPose(0)
 parsing_model_hd = Parsing(0)
 ootd_model_hd = OOTDiffusionHD(0)
 
-openpose_model_dc = OpenPose(1)
-parsing_model_dc = Parsing(1)
-ootd_model_dc = OOTDiffusionDC(1)
-
+# openpose_model_dc = OpenPose(1)
+# parsing_model_dc = Parsing(1)
+# ootd_model_dc = OOTDiffusionDC(1)
+openpose_model_dc = openpose_model_hd
+parsing_model_dc = parsing_model_hd
+ootd_model_dc = ootd_model_hd
 
 category_dict = ['upperbody', 'lowerbody', 'dress']
 category_dict_utils = ['upper_body', 'lower_body', 'dresses']
@@ -107,14 +109,14 @@ def process_dc(vton_img, garm_img, category, n_samples, n_steps, image_scale, se
 block = gr.Blocks().queue()
 with block:
     with gr.Row():
-        gr.Markdown("# OOTDiffusion Demo")
+        gr.Markdown("# AI一键换衣")
     with gr.Row():
-        gr.Markdown("## Half-body")
+        gr.Markdown("## 上衣")
     with gr.Row():
-        gr.Markdown("***Support upper-body garments***")
+        gr.Markdown("***支持换上半身衣服***")
     with gr.Row():
         with gr.Column():
-            vton_img = gr.Image(label="Model", sources='upload', type="filepath", height=384, value=model_hd)
+            vton_img = gr.Image(label="模特", sources='upload', type="filepath", height=384, value=model_hd)
             example = gr.Examples(
                 inputs=vton_img,
                 examples_per_page=14,
@@ -135,7 +137,7 @@ with block:
                     os.path.join(example_path, 'model/01861_00.jpg'),
                 ])
         with gr.Column():
-            garm_img = gr.Image(label="Garment", sources='upload', type="filepath", height=384, value=garment_hd)
+            garm_img = gr.Image(label="衣服", sources='upload', type="filepath", height=384, value=garment_hd)
             example = gr.Examples(
                 inputs=garm_img,
                 examples_per_page=14,
@@ -158,7 +160,7 @@ with block:
         with gr.Column():
             result_gallery = gr.Gallery(label='Output', show_label=False, elem_id="gallery", preview=True, scale=1)   
     with gr.Column():
-        run_button = gr.Button(value="Run")
+        run_button = gr.Button(value="一键换衣")
         n_samples = gr.Slider(label="Images", minimum=1, maximum=4, value=1, step=1)
         n_steps = gr.Slider(label="Steps", minimum=20, maximum=40, value=20, step=1)
         # scale = gr.Slider(label="Scale", minimum=1.0, maximum=12.0, value=5.0, step=0.1)
@@ -170,14 +172,14 @@ with block:
 
 
     with gr.Row():
-        gr.Markdown("## Full-body")
+        gr.Markdown("## 全身换衣")
     with gr.Row():
-        gr.Markdown("***Support upper-body/lower-body/dresses; garment category must be paired!!!***")
+        gr.Markdown("***支持全身换衣---上衣/裤子/裙子---确保选择正确的模式***")
     with gr.Row():
         with gr.Column():
-            vton_img_dc = gr.Image(label="Model", sources='upload', type="filepath", height=384, value=model_dc)
+            vton_img_dc = gr.Image(label="模特", sources='upload', type="filepath", height=384, value=model_dc)
             example = gr.Examples(
-                label="Examples (upper-body/lower-body)",
+                label="一些上衣/下半身模特",
                 inputs=vton_img_dc,
                 examples_per_page=7,
                 examples=[
@@ -190,7 +192,7 @@ with block:
                     os.path.join(example_path, 'model/049205_0.jpg'),
                 ])
             example = gr.Examples(
-                label="Examples (dress)",
+                label="一些裙子模特",
                 inputs=vton_img_dc,
                 examples_per_page=7,
                 examples=[
@@ -203,10 +205,10 @@ with block:
                     os.path.join(example_path, 'model/053700_0.jpg'),
                 ])
         with gr.Column():
-            garm_img_dc = gr.Image(label="Garment", sources='upload', type="filepath", height=384, value=garment_dc)
-            category_dc = gr.Dropdown(label="Garment category (important option!!!)", choices=["Upper-body", "Lower-body", "Dress"], value="Upper-body")
+            garm_img_dc = gr.Image(label="上传衣服模版", sources='upload', type="filepath", height=384, value=garment_dc)
+            category_dc = gr.Dropdown(label="选择模式，确保选择正确（Upper-body为上半身；Lower-body为下半身；Dress为裙子）", choices=["Upper-body", "Lower-body", "Dress"], value="Upper-body")
             example = gr.Examples(
-                label="Examples (upper-body)",
+                label="上衣模版",
                 inputs=garm_img_dc,
                 examples_per_page=7,
                 examples=[
@@ -219,7 +221,7 @@ with block:
                     os.path.join(example_path, 'garment/050105_1.jpg'),
                 ])
             example = gr.Examples(
-                label="Examples (lower-body)",
+                label="下半身模版",
                 inputs=garm_img_dc,
                 examples_per_page=7,
                 examples=[
@@ -232,7 +234,7 @@ with block:
                     os.path.join(example_path, 'garment/051412_1.jpg'),
                 ])
             example = gr.Examples(
-                label="Examples (dress)",
+                label="裙子模版",
                 inputs=garm_img_dc,
                 examples_per_page=7,
                 examples=[
@@ -247,7 +249,7 @@ with block:
         with gr.Column():
             result_gallery_dc = gr.Gallery(label='Output', show_label=False, elem_id="gallery", preview=True, scale=1)   
     with gr.Column():
-        run_button_dc = gr.Button(value="Run")
+        run_button_dc = gr.Button(value="一键换衣")
         n_samples_dc = gr.Slider(label="Images", minimum=1, maximum=4, value=1, step=1)
         n_steps_dc = gr.Slider(label="Steps", minimum=20, maximum=40, value=20, step=1)
         # scale_dc = gr.Slider(label="Scale", minimum=1.0, maximum=12.0, value=5.0, step=0.1)
@@ -257,4 +259,4 @@ with block:
     ips_dc = [vton_img_dc, garm_img_dc, category_dc, n_samples_dc, n_steps_dc, image_scale_dc, seed_dc]
     run_button_dc.click(fn=process_dc, inputs=ips_dc, outputs=[result_gallery_dc])
 
-block.launch(server_name='0.0.0.0', server_port=7865)
+block.launch(server_name='0.0.0.0', server_port=6006)
